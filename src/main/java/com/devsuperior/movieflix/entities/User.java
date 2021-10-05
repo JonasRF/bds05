@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -33,20 +32,17 @@ public class User implements UserDetails, Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	
-	@Column(unique = true)
 	private String email;
-	
 	private String password;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_user_role", 
 		joinColumns = @JoinColumn(name = "user_id"), 
 		inverseJoinColumns = @JoinColumn(name = "role_id"))
-	Set<Role> roles = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	
 	@OneToMany(mappedBy = "user")
-	private List<Review> reviews = new ArrayList<>();
+	private List<Review> reviews = new ArrayList<>();	
 	
 	public User() {
 	}
@@ -123,7 +119,7 @@ public class User implements UserDetails, Serializable {
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority()))
@@ -153,5 +149,14 @@ public class User implements UserDetails, Serializable {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+	
+	public boolean hasHole(String roleName) {
+		for(Role role : roles) {
+			if(role.getAuthority().equals(roleName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
