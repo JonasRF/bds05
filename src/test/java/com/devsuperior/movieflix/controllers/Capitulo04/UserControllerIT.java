@@ -1,4 +1,4 @@
-package com.devsuperior.movieflix.controllers;
+package com.devsuperior.movieflix.controllers.Capitulo04;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
